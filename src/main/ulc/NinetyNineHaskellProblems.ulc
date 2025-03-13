@@ -1,3 +1,4 @@
+--https://wiki.haskell.org/index.php?title=99_questions/1_to_10
 plus := λm.λn.λf.λx.m f(n f x)
 mult := λm.λn.λf.λx.m (n f) x
 zero := λf.λx.x
@@ -34,7 +35,6 @@ listFiveSeven := cons five (cons seven nil)
 listOneTwoThree := cons one (cons two (cons three nil))
 #assertPrintable [1, 2, 3]
 
--- https://wiki.haskell.org/index.php?title=99_questions/1_to_10
 -- Problem 1: Find the last element of a list
 last := yCombinator (λf. λl.(if (isNil (tail l)) (head l) (f (tail l))))
 last listOneTwoThree

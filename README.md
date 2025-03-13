@@ -7,14 +7,14 @@ ZeroLambda is 100% pure functional programming language which will allow you to 
 4. There is nothing hidden from you. You give a big lambda to the lambda machine and you have a normalized lambda back
 5. ZeroLambda is turing complete because Untyped Lambda Calculus (UTC) is turing complete. Moreover, the UTC is an alternative model of computation which will change the way you think
 6. You can see any other functional programming language as ZeroLambda with many technical optimizations (e.g. number multiplication) and restrictions on beta reductions (e.g. if we add types)
-7. The secrects of functional programming will be delivered to you very fast
+7. The deep secrets of functional programming will be delivered to you very fast
 
-# You need zerolambda if
+# You need ZeroLambda if
 1. You struggle to see the clear border between functional programming and other paradigms
 2. You don't understand how and why Fixpoint and Y-Combinator work and you need them in theorem provers like Coq and Lean to deeply understand the foundations of mathematics
 3. You use functional programming in a language where it was added later (like in Java) and not a part of the core (which is very bad for understanding)
     + You work with Java Streams or Project Reactor (reactive programming reuses functional paradigm a lot)
-4. You code in almost pure programming languages like Haskell or OCaml and think they keep many things hidden from you and it slows down your coding performance or motication
+4. You code in almost pure programming languages like Haskell or OCaml and think they keep many things hidden from you and it slows down your coding performance or motivation
 5. You don't understand what the model of computation is and why lambdas can compute
 6. You prepare for big tech interviews and would like to understand functional algorithms better because there are many algorithms that can be implemented fully functional and it is much faster, easier and cleaner to code (e.g. MergeSort)
 
@@ -44,5 +44,6 @@ If you need more examples, you can refer to [NinetyNineHaskellProblems.ulc](src/
 1. Install Intellij Idea Community Edition and open the project in it
 3. Run "iaroslav.baranov.zerolambda.app.ReplApp [sourceCode.ulc]"
 4. You can either edit source code in *.ulc or just type it in REPL
+5. You can use any global hotkey automation tool to assign "λ" to "ctrl + L" for faster typing
 
 [^1]: Type Theory and Formal Proof: An Introduction 1st Edition by Rob Nederpelt and Herman Geuvers
