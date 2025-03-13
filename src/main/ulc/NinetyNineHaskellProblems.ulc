@@ -1,0 +1,220 @@
+plus := λm.λn.λf.λx.m f(n f x)
+mult := λm.λn.λf.λx.m (n f) x
+zero := λf.λx.x
+one    := λf.λx.f x
+two    := λf.λx.f (f x)
+three  := λf.λx.f (f (f x))
+four   := λf.λx.f (f (f (f x)))
+five   := λf.λx.f (f (f (f (f x))))
+six    := λf.λx.f (f (f (f (f (f x)))))
+seven  := λf.λx.f (f (f (f (f (f (f x))))))
+eight  := λf.λx.f (f (f (f (f (f (f (f x)))))))
+nine   := λf.λx.f (f (f (f (f (f (f (f (f x))))))))
+ten    := λf.λx.f (f (f (f (f (f (f (f (f (f x)))))))))
+pred := λn.λf.λx.n(λk.λh.h(k f))(λu.x)(λu.u)
+if := λb.λx.λy.(b x) y
+true := λx.λy.x
+false := λx.λy.y
+isZero := λn.n(λx.false)true
+yCombinator := λy . (λx . y(x x))(λx . y(x x))
+factorial := yCombinator (λg.λn.if(isZero n)(one)(mult n(g(pred n))))
+succ := λn.λf.λx.f (n f x)
+exp := λb. λn. n b
+minus := λm.λn.((n pred) m)
+pair := λx.λy.λz.z x y
+first := λp.p true
+second := λp.p false
+nil := false
+isNil := λl.l(λh.λt.λd.false)true
+cons := pair
+head := first
+tail := second
+listZeroOne := cons zero (cons one nil)
+listFiveSeven := cons five (cons seven nil)
+listOneTwoThree := cons one (cons two (cons three nil))
+#assertPrintable [1, 2, 3]
+
+-- https://wiki.haskell.org/index.php?title=99_questions/1_to_10
+-- Problem 1: Find the last element of a list
+last := yCombinator (λf. λl.(if (isNil (tail l)) (head l) (f (tail l))))
+last listOneTwoThree
+#assertNumber 3
+
+last listZeroOne
+#assertNumber 1
+
+last listFiveSeven
+#assertNumber 7
+
+-- Problem 2: Find the last-but-one (or second-last) element of a list
+lastButOne := yCombinator (λf. λl.(if (isNil (tail (tail l))) (head l) (f (tail l))))
+lastButOne listOneTwoThree
+#assertNumber 2
+
+-- Problem 3: Find the K'th element of a list.
+elementAt := yCombinator (λf. λl. λk. (if (isZero k) (head l) (f (tail l) (pred k))))
+elementAt listOneTwoThree zero
+#assertNumber 1
+elementAt listOneTwoThree one
+#assertNumber 2
+elementAt listOneTwoThree two
+#assertNumber 3
+
+-- Problem 4: Find the number of elements in a list
+counter := yCombinator (λf. λl. λi. (if (isNil l) i (f (tail l) (succ i))))
+myLength := λl. counter l zero
+myLength nil
+#assertNumber 0
+myLength listOneTwoThree
+#assertNumber 3
+
+-- Problem 5: Reverse a list
+transfer := yCombinator (λf. λsourceList. λtargetList. (if (isNil targetList) sourceList (f (cons (head targetList) sourceList) (tail targetList))))
+reverse := λl. transfer nil l
+reverse listOneTwoThree
+elementAt (reverse listOneTwoThree) zero
+#assertNumber 3
+elementAt (reverse listOneTwoThree) one
+#assertNumber 2
+
+-- Problem 6: Find out whether a list is a palindrome
+le := λa. λb. isZero (minus a b)
+le zero six
+#assertTrue
+le six zero
+#assertFalse
+and := λp. λq. p q p
+and true true
+#assertTrue
+and true false
+#assertFalse
+and false false
+#assertFalse
+and false true
+#assertFalse
+eq := λa. λb. and (le a b) (le b a)
+eq seven seven
+#assertTrue
+eq seven one
+#assertFalse
+bothNil := λa. λb. and (isNil a) (isNil b)
+listCases := λa. λb. λbothNilCase. λleftNilCase. λrightNilCase. λnoneNilCase. if (bothNil a b) bothNilCase (if (isNil a) (leftNilCase) (if (isNil b) (rightNilCase) noneNilCase))
+eqL := yCombinator (λf. λa. λb. listCases a b true false false (and (eq (head a)(head b)) (f (tail a) (tail b))))
+eqL listOneTwoThree listFiveSeven
+#assertFalse
+eqL listFiveSeven listFiveSeven
+#assertTrue
+listOneTwoOne := cons one (cons two (cons one nil))
+isPalindrome := λl. eqL l (reverse l)
+isPalindrome listOneTwoOne
+#assertTrue
+
+not := λp.λa.λb.p b a
+lt := λa. λb. and (le a b) (not (eq a b))
+trichotomy := λa.λb.λaLTbCase.λbLTaCase.λaEQbCase. if (eq a b) aEQbCase (if (lt a b) aLTbCase (if (lt b a) bLTaCase zero))
+mod := yCombinator (λf.λa.λb. trichotomy a b a (f (minus a b) b) zero)
+mod ten four
+#assertNumber 2
+
+--Problem 7: Flatten a nested list structure
+nestedLists := (cons one (cons two (cons (cons three (cons (cons four (cons five nil)) nil)) (cons six nil))))
+#assertPrintable [1, 2, [3, [4, 5]], 6]
+id := λx. x
+--Tagged elements
+listT := λl. λx. λy. x l
+consT := λh. λt. listT (cons h t)
+nilT := λx. λy. x nil
+elT := λe. λx. λy. y e
+oneT := elT one
+isList := λl. l (λa. true) (λb. false)
+nestedListsT := (consT (elT one) (consT (elT two) (consT (consT (elT three) (consT (consT (elT four) (consT (elT five) nilT)) nilT)) (consT (elT six) nilT))))
+checkT := consT (elT one) nilT
+append := yCombinator (λf.λleft.λright. if (isNil left)(right)(if(isNil right)(left)(cons (head left)(f (tail left) (right)))))
+append listOneTwoThree listFiveSeven
+append listFiveSeven listOneTwoThree
+headT := λl. l(head)false
+tailT := λl. l(tail)false
+isNilT := λl. l(isNil)false
+listFiveSevenT := consT (elT five) (consT (elT seven) nilT)
+listTwoTwoT := consT (elT two) (consT (elT two) nilT)
+appendT := yCombinator (λf.λleft.λright. if (isNilT left)(right)(if(isNilT right)(left)(consT (headT left)(f (tailT left) (right)))))
+flattenT := yCombinator (λf. λl. if (isNilT l) (l) (if (isList (headT l)) (appendT (f (headT l))(f (tailT l))) (consT (headT l) (f (tailT l)))))
+-- flattenT nestedListsT - WORKS
+
+--Problem 8: Eliminate consecutive duplicates of list elements
+listWithConseqDups := (cons one (cons two (cons two (cons two (cons three (cons four (cons four nil)))))))
+elimConseqDupsP := yCombinator (λf.λl. λp. if (isNil l) (nil) (if (eq (head l) p) (f (tail l) p) (cons (head l) (f (tail l) (head l)))))
+increasedHead := λl. if (isNil l) zero (succ (head l))
+elimConseqDups := λl. elimConseqDupsP l (increasedHead l)
+listWithoutConseqDups := elimConseqDups listWithConseqDups
+myLength listWithoutConseqDups
+#assertNumber 4
+
+--Problem 9: Pack consecutive duplicates of list elements into sublists
+singletonList := λe. cons e nil
+listWithConsequtives := cons two (cons two (cons three (cons five (cons five (cons five nil)))))
+packDuplicatesF := λf. λl. λc. if (isNil l) (cons c nil) (if (isNil c) (f(tail l)(singletonList (head l))) (if (eq (head c) (head l)) (f (tail l) (cons (head l) c)) (cons c (f l nil))))
+packDuplicatesInner := yCombinator packDuplicatesF
+packDuplicates := λl. packDuplicatesInner l nil
+packDuplicates listWithConsequtives
+#assertPrintable [[2, 2], [3], [5, 5, 5]]
+
+-- Problem 10: Run-length encoding of a list
+listOfPairs := cons (pair two three) (cons (pair seven two) nil)
+map := yCombinator (λf. λl. λg. if (isNil l) nil (cons (g (head l)) (f (tail l) g)))
+runLengthEncodingPacked := λl. map l (λe. pair (myLength e) (head e))
+runLengthEncoding := λl. runLengthEncodingPacked (packDuplicates l)
+runLengthEncoding listWithConsequtives
+#assertPrintable [(2, 2), (1, 3), (3, 5)]
+
+-- Problem 11: Modified run-length encoding
+modifiedRunLengthEncoding := λl. map (runLengthEncoding l) (λe. if (eq (first e) one) (second e) e)
+-- modifiedRunLengthEncoding listWithConsequtives
+-- output: [(2, 2), 3, (3, 5)]
+
+-- Problem 12: Decode a run-length encoded list
+tagL := λe. λx. λy. x e
+tagR := λe. λx. λy. y e
+elL := λe. tagL e
+pairR := λa. λb. λx. λy. y (pair a b)
+isL := λl. l (λa. true) (λb. false)
+isR := λl. l (λa. false) (λb. true)
+untag := λt. t id id
+-- [(4, 1), 2, (2, 3), (2, 1), 4, (4, 5)]
+encodingToDecode := cons (pairR four one) (cons (elL two) (cons (pairR two three) (cons (pairR two one) (cons (elL four) (cons (pairR four five) nil)))))
+untagList := λl. map l untag
+testPair := pair four one
+mapPair := λp. λfg. fg (first p) (second p)
+decrement := λn. minus n one
+decodePair := yCombinator (λf. λp. (mapPair p (λc. λnum. if (isZero c) nil (cons num (f (pair (decrement c) (num)))))))
+-- [[2, 3], [1], [6, 7]]
+listOfLists := cons (cons two (cons three nil)) (cons (cons one nil) (cons (cons six (cons seven nil)) nil))
+flatMap := yCombinator (λf. λl. append (head l) (f (tail l)))
+decodedMidway := λl. map l (λe. if (isL e) (singletonList (untag e)) (decodePair (untag e)))
+decoded := λl. flatMap (decodedMidway l)
+--decoded encodingToDecode
+--output: [1, 1, 1, 1, 2, 3, 3, 1, 1, 4, 5, 5, 5, 5]
+
+--Problem 13: Run-length encoding of a list (direct solution)
+-- input: listWithConsequtives, [2, 2, 3, 5, 5, 5]
+-- expected: [(2, 2), 3, (3, 5)]
+hasOneElement := λl. eq (myLength l) one
+listThreeCases := λl. λzeroEl. λoneEl. λmoreEl. if (isNil l) zeroEl (if (hasOneElement l) oneEl moreEl)
+listWithTwo := cons two nil
+listWithTwoTwo := cons two (cons two nil)
+convertListToPairOrEl := λl. listThreeCases l nil (tagL (head l)) (tagR (pair (myLength l) (head l)))
+
+isL (convertListToPairOrEl listWithTwo)
+#assertTrue
+untag (convertListToPairOrEl listWithTwo)
+#assertNumber 2
+isL (convertListToPairOrEl listWithTwoTwo)
+#assertFalse
+first (untag (convertListToPairOrEl listWithTwoTwo))
+#assertNumber 2
+
+listParts := λl. λf. f (head l) (tail l)
+encodingDirectProto := yCombinator (λf. λl. λc. if (isNil l) (cons (convertListToPairOrEl c) nil) (listParts l (λh. λt. (if (isNil c) (f t (cons h nil)) (if (eq (head c) h) (f t (cons h c)) (cons (convertListToPairOrEl c) (f l nil)))))))
+encodingDirect := λl. encodingDirectProto l nil
+--untagList (encodingDirect listWithConsequtives)
+
