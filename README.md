@@ -1,5 +1,5 @@
 # Intro
-ZeroLambda is 100% pure functional programming language which will allow you to code in Untyped Lambda Calculus as defined in textbooks [^1]. I dedicate it to Turing and Church and their grounbreaking work in the foundations of computation.
+ZeroLambda is 100% pure functional programming language which will allow you to code in Untyped Lambda Calculus as defined in textbooks [^1]. I dedicate it to Turing and Church and their groundbreaking work in the foundations of computation.
 
 1. You will always code in pure low level lambdas
 2. You will have to build every primitive from scratch (numbers, lists, pairs, recursion, addition, boolean logic etc). You can refer to [Church encoding](https://en.wikipedia.org/wiki/Church_encoding) for the full list of primitives and how to encode them
