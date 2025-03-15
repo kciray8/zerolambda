@@ -5,7 +5,7 @@ ZeroLambda is 100% pure functional programming language which will allow you to 
 2. You will have to build every primitive from scratch (numbers, lists, pairs, recursion, addition, boolean logic etc). You can refer to [Church encoding](https://en.wikipedia.org/wiki/Church_encoding) for the full list of primitives and how to encode them
 3. ZeroLambda is an educational project that will help you to learn and understand any other functional programming language
 4. There is nothing hidden from you. You give a big lambda to the lambda machine and you have a normalized lambda back
-5. ZeroLambda is turing complete because Untyped Lambda Calculus (UTC) is turing complete. Moreover, the UTC is an alternative model of computation which will change the way you think
+5. ZeroLambda is turing complete because Untyped Lambda Calculus (ULC) is turing complete. Moreover, the ULC is an alternative model of computation which will change the way you think
 6. You can see any other functional programming language as ZeroLambda with many technical optimizations (e.g. number multiplication) and restrictions on beta reductions (e.g. if we add types)
 7. The deep secrets of functional programming will be delivered to you very fast
 
@@ -42,8 +42,11 @@ If you need more examples, you can refer to [NinetyNineHaskellProblems.ulc](src/
 
 # How to start
 1. Install Intellij Idea Community Edition and open the project in it
-3. Run "iaroslav.baranov.zerolambda.app.ReplApp [sourceCode.ulc]"
+3. Run "java iaroslav.baranov.zerolambda.app.ReplApp [sourceCode.ulc]"
 4. You can either edit source code in *.ulc or just type it in REPL
 5. You can use any global hotkey automation tool to assign "λ" to "ctrl + L" for faster typing
+
+# Tips
+If you want step by step visualization of how lambdas compute, you can use [lambdacalc.io](https://lambdacalc.io/)
 
 [^1]: Type Theory and Formal Proof: An Introduction 1st Edition by Rob Nederpelt and Herman Geuvers

@@ -189,9 +189,9 @@ decrement := λn. minus n one
 decodePair := yCombinator (λf. λp. (mapPair p (λc. λnum. if (isZero c) nil (cons num (f (pair (decrement c) (num)))))))
 -- [[2, 3], [1], [6, 7]]
 listOfLists := cons (cons two (cons three nil)) (cons (cons one nil) (cons (cons six (cons seven nil)) nil))
-flatMap := yCombinator (λf. λl. append (head l) (f (tail l)))
+flat := yCombinator (λf. λl. append (head l) (f (tail l)))
 decodedMidway := λl. map l (λe. if (isL e) (singletonList (untag e)) (decodePair (untag e)))
-decoded := λl. flatMap (decodedMidway l)
+decoded := λl. flat (decodedMidway l)
 --decoded encodingToDecode
 --output: [1, 1, 1, 1, 2, 3, 3, 1, 1, 4, 5, 5, 5, 5]
 
@@ -217,4 +217,15 @@ listParts := λl. λf. f (head l) (tail l)
 encodingDirectProto := yCombinator (λf. λl. λc. if (isNil l) (cons (convertListToPairOrEl c) nil) (listParts l (λh. λt. (if (isNil c) (f t (cons h nil)) (if (eq (head c) h) (f t (cons h c)) (cons (convertListToPairOrEl c) (f l nil)))))))
 encodingDirect := λl. encodingDirectProto l nil
 --untagList (encodingDirect listWithConsequtives)
+
+--Problem 14: Duplicate the elements of a list
+flatMap := yCombinator (λf. λl. λg. if (isNil l) nil (append (g (head l)) (f (tail l) g)))
+duplicateEachElement := λl. flatMap l (λe. cons e (cons e nil))
+duplicateEachElement listOneTwoThree
+
+--Problem 15: Replicate the elements of a list a given number of times
+repeatElement := yCombinator (λf. λe. λn. if (isZero n) (nil) (cons e (f e (pred n))))
+replicate := λl. λn. flatMap l (λe. repeatElement e n)
+replicate listOneTwoThree three
+
 
